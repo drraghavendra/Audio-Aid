@@ -1,10 +1,12 @@
 Voice Agents
+
 Multilingual failed delivery recovery voice agent for the Build Out Loud hackathon (Wispr Flow × Bolna).
 ReDeliver Assistant calls customers after a failed delivery, understands whether they want to reschedule, cancel, or update their address, and confirms before any backend update.
 ---
-Description
-The problem
+Description Of The problem Statement
+
 When a delivery fails, the customer is usually left with a generic SMS or a support queue. Delivery companies lose time and money on repeat attempts, returns-to-origin and manual call-center follow-ups, while customers wait with no easy way to say what they actually want.
+
 What ReDeliver Assistant does
 ReDeliver Assistant is an AI voice agent that proactively phones the customer right after a failed delivery attempt and resolves it in one conversation:
 Understands intent in natural speech: reschedule, cancel, or update address.
@@ -15,8 +17,9 @@ Stays honest: it never invents order status and never claims an update happened 
 Escalates complex cases to a human.
 Who it is for
 Logistics and e-commerce teams that want to recover failed deliveries automatically, and customers who would rather talk for 45 seconds than navigate an app.
----
-Solution approach
+
+Solution approach :
+
 The solution is split into three layers so each piece can be built, tested and replaced independently.
 Layer	Responsibility	Implemented with
 1. Conversation	Listen, understand, respond, handle language switches and interruptions	Bolna (STT → LLM → TTS + telephony), driven by `prompts/system-prompt.md`
@@ -30,6 +33,7 @@ Multilingual from the first turn. A multilingual STT model (Soniox `stt-rt-v6` b
 Lean backend. Node.js and Supabase only. No heavy framework is needed for a webhook and a few scripts, which keeps the hackathon build fast.
 Optional persistence. The voice agent works without Supabase. Add it when you want transcripts and delivery actions stored.
 Agent configuration is code. `agent:create` generates `config/agent.export.json`, and `--dry-run` lets you inspect payloads before spending credits.
+
 Step-by-step approach
 Define behaviour: write the system prompt (intents, languages, confirmation rules, escalation).
 Create the agent: `npm run agent:create` provisions ReDeliver Assistant on Bolna with STT, LLM and TTS defaults.
