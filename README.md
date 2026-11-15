@@ -191,7 +191,6 @@ Command	Description
 Project structure
 VOICE-aGENTS/                    ← git repository root
 ├── audioaid-app/                ← React + Express (web + hearing test)
-├── Hearing-Loss-ref/            ← upstream reference (ideiasstella/Hearing-Loss)
 ├── prompts/
 │   ├── system-prompt.md           # Agent behaviour (source of truth)
 │   └── system-prompt-redelever.md # Legacy delivery prompt

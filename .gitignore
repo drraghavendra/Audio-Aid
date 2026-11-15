@@ -4,6 +4,3 @@ node_modules/
 *.log
 .DS_Store
 config/agent.export.json
-
-# Reference clone (optional); keep out of git if you only use it locally
-Hearing-Loss-ref/.git/
