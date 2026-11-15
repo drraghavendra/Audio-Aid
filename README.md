@@ -14,7 +14,6 @@ AudioAid’s response: a browser-based hearing test at six standard audiometric 
 
 One-line version (for a tagline or submission form): Hearing aids are tuned for speech; AudioAid restores the music hearing loss takes away, with personal EQ built from your own hearing profile and a voice guide to get you started.
 
-Both of your sources agree on the core problem. The Devpost page covers the web app (the hearing test and EQ engine), while the README adds the voice-guide channel, so the statement describes both together. The 1.5 billion figure comes from the team’s own Devpost write-up, so if you want it cited formally in your README, I can look up the current WHO number and add the source.
 
 
 
