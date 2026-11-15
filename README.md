@@ -1,182 +1,92 @@
-Yes! **Bolna and LiveKit Agents do very similar jobs, but they are not exactly the same.**
-
-Both can be used to build AI voice agents that listen, understand, respond, handle conversations and perform actions.
-
-The biggest difference is how much infrastructure and code you manage yourself.
-
-## **1. What exactly does Bolna do?**
-
-Think of Bolna as a **voice-agent orchestration platform**.
-
-Suppose you want to build an AI receptionist.
-
-Without Bolna, you need to integrate several components yourself:
-
-- Telephony to make and receive calls.
-- STT to convert speech into text.
-- LLM to understand the customer.
-- TTS to generate spoken responses.
-- Conversation management.
-- Tool calling to execute business operations.
-
-Bolna brings these components together and lets you configure an agent.
-
-## **How Bolna works**
-
-**Customer phone**
-
-Twilio / Plivo and supported telephony
-
-Bolna orchestration
-
-**Voice conversation engine**
-
-Coordinates audio, conversation and responses
-
-**STT**
-
-Deepgram
-
-**LLM**
-
-OpenAI
-
-**TTS**
-
-ElevenLabs
-
-**Business tools**
-
-APIs · Database · Booking · CRM · Notifications
-
-Bolna's open-source repository describes this orchestration architecture and its integrations.&#x20;
-
-[image](https://www.google.com/s2/favicons?domain=https://github.com\&sz=32)
-
-GitHub
-
-
-
-## **2. Bolna vs LiveKit**
-
-[Bolna: Build Your Perfect Voice AI Agent | Product Hunt](https://images.openai.com/static-rsc-4/brd513NcaRFUT7hcGlbab6PbsG8r87r9bphPZ3Mx_Shrdk-wW-5uY-e9tozV8haYzXHj7BB5oTqvQ_xzEFvlwaqns28J_H3XQ44oSrTU4SXnh14IzNiYGHab4y5p5XxqssiDrS5sMmJuZmBvE1rWsnsrmPc8LxSESTD9iIXrofU?purpose=inline)
-
-**Bolna**
-
-More platform-oriented
-
-[LiveKit: How I Got Here](https://images.openai.com/static-rsc-4/eB94pKBIpMGJ5VE4Spn_KIzfisl3u-tcWJUgQULUe1meArvLwlfno4LpOLTZ9UY8g7B5Z2OGgnknAivEINd2ho_xM0hNx4NMTdVY-LpDEfSzQLKPoW2aaizZcNy3ZgSc_Y2y7uugmlaVZNnVaQxFzjGNjzmJs6M5q-cqkIwEv04?purpose=inline)
-
-**LiveKit**
-
-More developer-oriented
-
-| Capability              | Bolna                  | LiveKit Agents             |
-| ----------------------- | ---------------------- | -------------------------- |
-| Voice agents            | Yes                    | Yes                        |
-| STT integration         | Yes                    | Yes                        |
-| LLM integration         | Yes                    | Yes                        |
-| TTS integration         | Yes                    | Yes                        |
-| Phone calls             | Telephony integrations | SIP/telephony integrations |
-| Custom business logic   | Yes                    | Yes                        |
-| Low-level media control | More abstracted        | More control               |
-| Agent configuration     | APIs/dashboard         | Primarily code             |
-| Open source             | Yes                    | Yes                        |
-| MCP                     | Bolna MCP available    | MCP integrations supported |
-
-LiveKit provides a real-time media infrastructure based on WebRTC, alongside its agent framework.&#x20;
-
-[image](https://www.google.com/s2/favicons?domain=https://docs.livekit.io\&sz=32)
-
-LiveKit Documentation+2
-
-
-
-## **3. What happens when a customer interrupts?**
-
-Imagine this conversation:
-
-**AI:** Hello, your delivery is scheduled for tomorrow morning.
-
-**Customer:** Wait! I want it tomorrow evening.
-
-**AI:** Sure, tomorrow evening. Would 6 PM work?
-
-Both platforms can support interruption-aware conversations, depending on their configured models and settings.
-
-But LiveKit gives you more direct control over the conversation runtime, turn-taking and interruption logic.&#x20;
-
-[image](https://www.google.com/s2/favicons?domain=https://livekit.com\&sz=32)
-
-LiveKit+1
-
-
-
-## **4. What should you use for ReDeliver AI?**
-
-My recommendation:
-
-**Bolna**
-
-Start here
-
-Use Bolna for:
-
-- Quickly creating voice agents.
-- Making outbound delivery calls.
-- Configuring multilingual conversations.
-- Testing agent prompts.
-- Connecting business actions.
-
-  **LiveKit**
-
-Consider LiveKit when you need:
-
-- Custom real-time voice experiences.
-- More control over audio streaming.
-- Custom interruption and turn-taking logic.
-- Web/mobile voice applications.
-- More complex agent workflows.
-
-## **5. One important architecture distinction**
-
-You can build your own platform on top of either technology.
-
-For example:
-
-```
-              YOUR PRODUCT
-             ReDeliver AI
-                   |
-          Backend (Spring Boot)
-                   |
-          Agent Management API
-                   |
-          +--------+--------+
-          |                 |
-        Bolna             LiveKit
-          |                 |
-     Phone calls       Voice sessions
-          |                 |
-          +--------+--------+
-                   |
-            PostgreSQL
-                   |
+ReDeliver AI
+ReDeliver AI is an intelligent, voice-driven delivery management platform designed to automate outbound customer calls, handle real-time delivery rescheduling, and execute backend logistics operations seamlessly.
+---
+📋 Table of Contents
+Overview
+System Architecture
+Voice Engine Comparison: Bolna vs. LiveKit Agents
+How It Works
+Interruption & Turn-Taking Handling
+Tech Stack
+Roadmap & Architectural Direction
+---
+🚀 Overview
+Managing failed or rescheduled deliveries requires timely, natural communication with customers. ReDeliver AI bridges the gap between backend logistics systems and customers using conversational voice AI agents that can:
+Initiate outbound delivery confirmation and rescheduling calls.
+Understand natural, multilingual customer responses.
+Handle mid-sentence customer interruptions gracefully.
+Trigger real-time database updates, CRM entries, and delivery slot bookings via tool calling.
+---
+🏗 System Architecture
+ReDeliver AI is designed around a modular backend architecture where the core business logic is decoupled from the underlying voice runtime. This allows the platform to start fast with a managed orchestration layer (Bolna) and optionally scale or swap into low-level real-time media control (LiveKit Agents).
+```text
+               YOUR PRODUCT
+               ReDeliver AI
+                    |
+           Backend (Spring Boot)
+                    |
+           Agent Management API
+                    |
+           +--------+--------+
+           |                 |
+         Bolna            LiveKit
+           |                 |
+      Phone calls      Voice sessions
+           |                 |
+           +--------+--------+
+                    |
+               PostgreSQL
+                    |
           Delivery Management
 ```
-
-You don't need both initially. Choose one runtime and build your business logic around it.
-
-## **6. My question for your next learning step**
-
-**What do you ultimately want to build?**
-
-A platform like Bolna — users create voice agents without coding.
-
-A custom voice-agent platform using LiveKit and Python/Node.js.
-
-A platform supporting both Bolna and LiveKit as interchangeable voice engines.
-
-Continue learning
-
-This decision will determine the architecture we should build, rather than just creating another basic voice chatbot.
+---
+⚖️ Voice Engine Comparison: Bolna vs. LiveKit Agents
+Both Bolna and LiveKit Agents enable AI voice agents that listen, understand, respond, and execute actions. The primary distinction lies in infrastructure abstraction versus low-level media control:
+Capability	Bolna (Platform-Oriented)	LiveKit Agents (Developer-Oriented)
+Core Focus	End-to-end voice-agent orchestration	Real-time WebRTC media infrastructure & agent framework
+Voice Agents	Yes	Yes
+STT / LLM / TTS	Built-in integrations (Deepgram, OpenAI, ElevenLabs, etc.)	Modular plugin integrations
+Telephony	Native telephony integrations (Twilio, Plivo, etc.)	SIP & telephony integrations
+Low-Level Media Control	More abstracted	Granular control over audio streams & turn-taking
+Agent Configuration	APIs & Dashboard	Primarily code-driven (Python / Node.js)
+Custom Business Logic	Yes (Webhooks & Tool Calling)	Yes (Direct code execution & Tool Calling)
+MCP Support	Bolna MCP available	MCP integrations supported
+Open Source	Yes	Yes
+Why Start with Bolna?
+For the initial phase of ReDeliver AI, Bolna is recommended to accelerate time-to-market:
+Rapidly spin up outbound delivery voice agents without managing WebRTC/telephony plumbing.
+Easily configure multilingual prompts and test conversation flows.
+Connect directly to ReDeliver AI's Spring Boot business APIs for live order updates.
+When to Introduce LiveKit?
+LiveKit Agents becomes ideal as the product expands to require:
+Custom in-app web or mobile voice experiences over WebRTC.
+Fine-grained control over audio streaming, latency, and custom interruption/turn-taking logic.
+Complex, multi-agent real-time workflows.
+---
+⚙️ How It Works
+When using Bolna as the primary voice orchestration engine, a typical delivery call follows this pipeline:
+Trigger: ReDeliver AI's Spring Boot backend identifies a delivery requiring customer confirmation and calls the Agent Management API.
+Telephony: Bolna initiates an outbound call to the Customer Phone via Twilio / Plivo.
+Voice Conversation Engine:
+STT (Speech-to-Text): Deepgram transcribes customer speech in real time.
+LLM (Reasoning): OpenAI processes the intent, delivery context, and conversation state.
+TTS (Text-to-Speech): ElevenLabs synthesizes natural, low-latency voice responses.
+Business Tools Execution: During the call, the agent invokes tool calls to interact with PostgreSQL, Delivery Management APIs, Booking systems, and Notifications.
+---
+🗣 Interruption & Turn-Taking Handling
+Real-world phone calls are non-linear. ReDeliver AI supports interruption-aware conversations so customers can naturally redirect the agent mid-sentence:
+> **AI:** *"Hello, your delivery is scheduled for tomorrow morning."*  
+> **Customer:** *"Wait! I want it tomorrow evening."*  
+> **AI:** *"Sure, tomorrow evening. Would 6 PM work?"*
+---
+🛠 Tech Stack
+Core Backend: Java / Spring Boot
+Database: PostgreSQL
+Voice Orchestration (Primary): Bolna (with Twilio/Plivo, Deepgram, OpenAI, ElevenLabs)
+Real-Time Media Runtime (Optional/Future): LiveKit Agents (WebRTC, SIP, Python/Node.js)
+---
+🧭 Roadmap & Architectural Direction
+As ReDeliver AI evolves, development can follow one of three architectural tracks depending on product goals:
+[ ] Track A — Rapid SaaS / Logistics Automation (Bolna-First): Focus on Spring Boot delivery workflows, prompt optimization, and multi-language outbound campaigns using Bolna's APIs.
+[ ] Track B — Custom Real-Time Voice Platform (LiveKit-First): Build a custom Python/Node.js voice runtime on LiveKit for full control over WebRTC streams, custom turn-taking, and in-app voice widgets.
+[ ] Track C — Engine-Agnostic Voice Platform: Abstract the Agent Management API in Spring Boot to support both Bolna (for telephony) and LiveKit (for web/mobile/custom sessions) as interchangeable voice engines.
