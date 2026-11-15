@@ -1,35 +1,20 @@
 AudioAid · Voice Agents
+
 Hearing aids are tuned for speech. AudioAid brings music back.
 AudioAid helps people with hearing loss enjoy music again. A browser-based hearing check builds a personal profile, and a real-time EQ compensates songs to match it. This repository is the voice guide: a Bolna phone agent that explains the product, prepares users for the browser hearing test, and answers FAQs. It does not diagnose anything on the call.
 Built for the Build Out Loud hackathon (Wispr Flow × Bolna): built by voice with Wispr Flow, with the agent configured on Bolna through MCP and Node scripts.
----
-Table of contents
-Problem statement
-Solution overview
-How the pieces fit
-Flow charts
-Agent behaviour and safety
-Tech stack
-Quick start
-Environment variables
-NPM scripts
-Project structure
-Testing
-Supabase (optional)
-Webhooks
-Where to save context and feedback
-Roadmap
-Security and responsibility
-Links
----
+
 Problem statement
 Modern hearing aids are optimised for speech clarity. Music has a wider dynamic range, richer harmonics and different priorities, so many hearing-aid users find songs flat, harsh or lifeless. Generic fixes such as "boost the bass" ignore the fact that every person's hearing loss is different.
+
 Two gaps follow:
 Personalisation. People need music compensated against their own hearing profile, not a one-size-fits-all preset.
 Guidance. Many users are older, less comfortable with technology, and would rather ask a question on a phone call than read a help page before taking an online hearing check.
+
 Solution overview
 AudioAid has two channels that work together.
 Channel	What it does
+
 Web app (React + TypeScript + Tailwind + Web Audio API, separate codebase)	Runs a six-frequency pure-tone hearing check in the browser, builds an audiogram-style profile, and applies personal EQ to uploaded songs in real time
 This repo: AudioAid Voice Assistant (Bolna)	Phone support that explains the product, preps users for the browser test, explains music vs speech in hearing aids, and answers FAQs by voice
 What the voice agent does
@@ -44,7 +29,8 @@ Diagnose hearing loss or give clinical advice.
 Continue a normal conversation if the caller reports red-flag symptoms (it refers them to a professional).
 Submission narrative: `docs/SUBMISSION-AUDIOAID.md`.
 Legacy delivery prompt (from an earlier project): `prompts/system-prompt-redelever.md`.
----
+
+
 How the pieces fit
 ```mermaid
 flowchart LR
