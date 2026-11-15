@@ -7,8 +7,8 @@ Description Of The problem Statement
 
 When a delivery fails, the customer is usually left with a generic SMS or a support queue. Delivery companies lose time and money on repeat attempts, returns-to-origin and manual call-center follow-ups, while customers wait with no easy way to say what they actually want.
 
-What ReDeliver Assistant does
-ReDeliver Assistant is an AI voice agent that proactively phones the customer right after a failed delivery attempt and resolves it in one conversation:
+What Voice Agents Assistant does
+Voice Agents Assistant is an AI voice agent that proactively phones the customer right after a failed delivery attempt and resolves it in one conversation:
 Understands intent in natural speech: reschedule, cancel, or update address.
 Speaks the customer's language: starts in English and follows the customer into Telugu or Hindi if they switch.
 Handles interruptions: if the customer changes their mind mid-call (for example "10 AM... actually make it 6 PM"), the agent uses the latest choice.
@@ -44,6 +44,7 @@ Capture results: Bolna posts call data to the webhook, which upserts rows into S
 Iterate: review transcripts, tweak the prompt, push with `agent:update-prompt`, repeat.
 Close the loop (Day 2): map Bolna tools/dispositions to Node, which writes confirmed `delivery_actions`.
 ---
+
 Flow charts
 1. End-to-end system flow
 ```mermaid
@@ -59,6 +60,7 @@ flowchart LR
     H --> J[Resolve intent<br/>delivery-resolution.js]
     J --> K[(Supabase<br/>delivery_actions)]
 ```
+
 2. Conversation flow
 ```mermaid
 flowchart TD
@@ -83,6 +85,7 @@ flowchart TD
     OK --> E([End call])
     H --> E
 ```
+
 3. Developer workflow
 ```mermaid
 flowchart LR
