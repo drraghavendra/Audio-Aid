@@ -216,7 +216,7 @@ Run `supabase/schema.sql` in the SQL Editor.
 Add `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` to `.env`.
 Run `npm run webhook`. On each Bolna POST, rows upsert into `call_executions`.
 Setup guide: `docs/SUPABASE.md`.
----
+
 Webhooks
 ```powershell
 npm run webhook
