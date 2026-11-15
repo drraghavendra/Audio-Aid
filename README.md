@@ -1,7 +1,17 @@
 AudioAid · Voice Agents
 
-Problem statement 
-Modern hearing aids are optimised for speech clarity. Music has a wider dynamic range, richer harmonics and different priorities, so many hearing-aid users find songs flat, harsh or lifeless. Generic fixes such as "boost the bass" ignore the fact that every person's hearing loss is different.
+
+
+Problem statement Description 
+
+Hearing loss affects hundreds of millions of people worldwide, and for many of them music is one of the things they miss most. Music is tied to memory, mood, culture and connection, yet it is often the part of daily life that hearing devices serve worst.
+
+Hearing aids are built for speech, not music. They are designed to make conversation clear, so they compress loudness, suppress background noise and limit feedback. Those choices help with speech, but they work against music, which has a wider dynamic range, richer harmonics and sustained tones that a speech-tuned device may treat as noise. Many users describe songs as flat, harsh, muffled or lifeless, and some stop listening altogether.
+
+Generic fixes do not work. Common advice such as “boost the bass” or “use a louder volume” assumes everyone loses hearing in the same way. In reality, every person’s hearing loss is different. One person may struggle with high frequencies, another with the mids, and the pattern often differs between ears. A one-size-fits-all preset can fix one frequency range while making another harsh or uncomfortable.
+
+Personalised help is hard to reach. Clinical audiology can build a precise profile, but appointments are slow and costly, and they focus on speech outcomes. Music-specific tuning is rarely offered. Many users, especially older adults, also find online tools confusing and would prefer to ask a question by phone before trying a hearing check.
+
 
 Hearing aids are tuned for speech. AudioAid brings music back.
 AudioAid helps people with hearing loss enjoy music again. A browser-based hearing check builds a personal profile, and a real-time EQ compensates songs to match it. This repository is the voice guide: a Bolna phone agent that explains the product, prepares users for the browser hearing test, and answers FAQs. It does not diagnose anything on the call.
