@@ -1,7 +1,7 @@
 AudioAid · Voice Agents
 Problem statement
 
-Hearing loss affects over 1.5 billion people worldwide (the figure cited on the Devpost page), and one of the most common complaints from hearing-aid users is that music sounds worse, not better. Hearing aids are optimised for speech clarity. They compress loudness and suppress noise, which helps conversation but flattens music’s wide dynamic range and rich harmonics. Songs end up sounding flat, harsh or lifeless.
+Hearing loss affects over 1.5 billion people worldwide and one of the most common complaints from hearing-aid users is that music sounds worse, not better. Hearing aids are optimised for speech clarity. They compress loudness and suppress noise, which helps conversation but flattens music’s wide dynamic range and rich harmonics. Songs end up sounding flat, harsh or lifeless.
 
 Generic fixes such as “boost the bass” do not help, because every person’s hearing loss is different and often differs between ears. Clinical tuning is slow, costly and focused on speech, and many older users find online hearing tools confusing.
 
