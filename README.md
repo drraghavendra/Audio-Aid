@@ -1,25 +1,22 @@
 AudioAid · Voice Agents
+Problem statement
+
+Hearing loss affects over 1.5 billion people worldwide (the figure cited on the Devpost page), and one of the most common complaints from hearing-aid users is that music sounds worse, not better. Hearing aids are optimised for speech clarity. They compress loudness and suppress noise, which helps conversation but flattens music’s wide dynamic range and rich harmonics. Songs end up sounding flat, harsh or lifeless.
+
+Generic fixes such as “boost the bass” do not help, because every person’s hearing loss is different and often differs between ears. Clinical tuning is slow, costly and focused on speech, and many older users find online hearing tools confusing.
+
+This leaves two gaps:
+
+1)Personalisation: music needs to be compensated against each person’s own hearing profile, not a one-size-fits-all preset.
+2)Guidance: many users would rather ask a question by phone than read a help page before taking a hearing check.
+
+AudioAid’s response: a browser-based hearing test at six standard audiometric frequencies (250 Hz to 8 kHz) builds a personal profile, and a real-time EQ applies matching compensation to any uploaded song. A Bolna voice assistant covers the guidance gap by explaining the product and preparing users for the test, without diagnosing anything.
+
+One-line version (for a tagline or submission form): Hearing aids are tuned for speech; AudioAid restores the music hearing loss takes away, with personal EQ built from your own hearing profile and a voice guide to get you started.
+
+Both of your sources agree on the core problem. The Devpost page covers the web app (the hearing test and EQ engine), while the README adds the voice-guide channel, so the statement describes both together. The 1.5 billion figure comes from the team’s own Devpost write-up, so if you want it cited formally in your README, I can look up the current WHO number and add the source.
 
 
-
-Problem statement Description 
-
-Hearing loss affects hundreds of millions of people worldwide, and for many of them music is one of the things they miss most. Music is tied to memory, mood, culture and connection, yet it is often the part of daily life that hearing devices serve worst.
-
-Hearing aids are built for speech, not music. They are designed to make conversation clear, so they compress loudness, suppress background noise and limit feedback. Those choices help with speech, but they work against music, which has a wider dynamic range, richer harmonics and sustained tones that a speech-tuned device may treat as noise. Many users describe songs as flat, harsh, muffled or lifeless, and some stop listening altogether.
-
-Generic fixes do not work. Common advice such as “boost the bass” or “use a louder volume” assumes everyone loses hearing in the same way. In reality, every person’s hearing loss is different. One person may struggle with high frequencies, another with the mids, and the pattern often differs between ears. A one-size-fits-all preset can fix one frequency range while making another harsh or uncomfortable.
-
-Personalised help is hard to reach. Clinical audiology can build a precise profile, but appointments are slow and costly, and they focus on speech outcomes. Music-specific tuning is rarely offered. Many users, especially older adults, also find online tools confusing and would prefer to ask a question by phone before trying a hearing check.
-
-
-Hearing aids are tuned for speech. AudioAid brings music back.
-AudioAid helps people with hearing loss enjoy music again. A browser-based hearing check builds a personal profile, and a real-time EQ compensates songs to match it. This repository is the voice guide: a Bolna phone agent that explains the product, prepares users for the browser hearing test, and answers FAQs. It does not diagnose anything on the call.
-Built for the Build Out Loud hackathon (Wispr Flow × Bolna): built by voice with Wispr Flow, with the agent configured on Bolna through MCP and Node scripts.
-
-Two gaps follow:
-Personalisation. People need music compensated against their own hearing profile, not a one-size-fits-all preset.
-Guidance. Many users are older, less comfortable with technology, and would rather ask a question on a phone call than read a help page before taking an online hearing check.
 
 Solution overview
 AudioAid has two channels that work together.
