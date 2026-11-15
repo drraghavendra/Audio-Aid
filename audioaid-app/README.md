@@ -1,6 +1,6 @@
 # AudioAid Web App
 
-Full-stack app based on [ideiasstella/Hearing-Loss](https://github.com/ideiasstella/Hearing-Loss): **React + Vite + Express**, Web Audio EQ, plus **in-browser pure-tone hearing check**.
+Full-stack app based on **React + Vite + Express**, Web Audio EQ, plus **in-browser pure-tone hearing check**.
 
 | Path | Feature |
 |------|---------|
