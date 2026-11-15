@@ -35,6 +35,7 @@ Optional persistence. The voice agent works without Supabase. Add it when you wa
 Agent configuration is code. `agent:create` generates `config/agent.export.json`, and `--dry-run` lets you inspect payloads before spending credits.
 
 Step-by-step approach
+
 Define behaviour: write the system prompt (intents, languages, confirmation rules, escalation).
 Create the agent: `npm run agent:create` provisions ReDeliver Assistant on Bolna with STT, LLM and TTS defaults.
 Test manually: run the scenarios in `config/test-scenarios.json` (time change, language switch).
