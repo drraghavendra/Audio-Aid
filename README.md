@@ -99,7 +99,6 @@ flowchart LR
     T --> R[Review transcript<br/>Bolna dashboard or Supabase]
     R --> P
 ```
----
 Agent behaviour and safety
 Guides browser hearing test prep (quiet room, headphones, six tones).
 Explains music vs speech in hearing aids and profile-based EQ, not generic bass boost.
@@ -107,7 +106,7 @@ Does not play test tones on the phone or invent audiogram values.
 Redirects ear pain or sudden hearing loss to a professional.
 English, short phone-friendly answers.
 Full prompt (source of truth): `prompts/system-prompt.md`.
----
+
 Tech stack
 Layer	Technology
 Voice (phone)	Bolna: STT → LLM → TTS + telephony
@@ -118,7 +117,7 @@ Build	Cursor + Wispr Flow (dictation)
 Agent config	Bolna MCP + REST API
 Defaults in code: Soniox STT (`stt-rt-v6`, `en`) → OpenAI `gpt-4.1-mini` → ElevenLabs TTS. Multilingual STT can be enabled later via `TRANSCRIBER_LANGUAGE`.
 No Spring Boot. Node and Supabase only.
----
+
 Quick start
 Prerequisites
 Node.js 18+
@@ -146,7 +145,7 @@ Bolna MCP (Cursor)
 copy .cursor\mcp.json.example .cursor\mcp.json
 ```
 Add your API key, reload Cursor, then ask: List my Bolna agents.
----
+
 Environment variables
 Variable	Required	Purpose
 `BOLNA_API_KEY`	Yes	API auth
@@ -159,7 +158,7 @@ Variable	Required	Purpose
 `SUPABASE_SERVICE_ROLE_KEY`	Optional	Server and webhook only
 `WISPR_API_KEY`	Optional	Flow REST STT helper
 Never commit `.env` or `service_role` keys.
----
+
 NPM scripts
 Command	Description
 `npm run verify`	Check Bolna key and wallet
@@ -173,9 +172,8 @@ Command	Description
 `npm run execution:poll -- <id>`	Poll until the call completes
 `npm run webhook`	Webhook on `http://localhost:8080/webhook`
 `npm run wispr:transcribe -- file.wav`	Wispr Flow API test
----
+
 Project structure
-```
 VOICE-aGENTS/
 ├── prompts/
 │   ├── system-prompt.md           # Agent behaviour (source of truth)
@@ -196,9 +194,9 @@ VOICE-aGENTS/
 │   ├── PROJECT-CONTEXT.md         # Decisions, feedback, agent IDs
 │   └── SUPABASE.md                # Database setup
 └── .cursor/mcp.json.example
-```
+
 Workflow: edit `prompts/system-prompt.md`, then run `npm run agent:update-prompt`.
----
+
 Testing
 Scenario	Pass if
 Test prep	Gives browser steps; no on-call diagnosis
@@ -232,21 +230,21 @@ Test notes, decisions, agent links	`docs/PROJECT-CONTEXT.md`
 Call data (automatic)	Supabase `call_executions`
 Official transcripts	Bolna dashboard → Executions
 Prompt changes	`prompts/system-prompt.md`
----
+
 Roadmap
 Phase	Focus
 
 Day 1	Agent, prompt, MCP, manual scenarios
 Day 2	Bolna tools and dispositions, Node handling, richer call records in Supabase
 Later	Multilingual support via `TRANSCRIBER_LANGUAGE`, small Node APIs, Supabase dashboard (still no Spring Boot)
----
+
 Security and responsibility
 Keep API keys out of git and public repos.
 Bolna MCP tools marked with a warning can spend balance. Confirm before `start_outbound_call`.
 Use the `service_role` key only on the server, never in frontend code.
 AudioAid is an enjoyment and education tool, not a medical device. A browser tone test is not a clinical audiogram. Anyone with ear pain, sudden hearing loss or other concerning symptoms should see a qualified professional.
 Only call numbers whose owners have consented.
----
+
 Links
 Bolna platform · API quickstart · MCP quickstart
 Bolna MCP (GitHub)
