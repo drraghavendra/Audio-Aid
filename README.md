@@ -26,10 +26,6 @@ Channel	What it does
 
 
 
-Solution overview
-AudioAid has two channels that work together.
-Channel	What it does
-
 Web app (React + TypeScript + Tailwind + Web Audio API, separate codebase)	Runs a six-frequency pure-tone hearing check in the browser, builds an audiogram-style profile, and applies personal EQ to uploaded songs in real time
 This repo: AudioAid Voice Assistant (Bolna)	Phone support that explains the product, preps users for the browser test, explains music vs speech in hearing aids, and answers FAQs by voice
 What the voice agent does
