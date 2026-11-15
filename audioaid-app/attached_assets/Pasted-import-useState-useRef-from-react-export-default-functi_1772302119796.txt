@@ -1,0 +1,101 @@
+import { useState, useRef } from "react";
+
+export default function App() {
+  const [audioURL, setAudioURL] = useState(null);
+  const [mode, setMode] = useState("normal");
+
+  const audioRef = useRef(null);
+  const contextRef = useRef(null);
+  const filtersRef = useRef([]);
+
+  const frequencies = [250, 500, 1000, 2000, 4000, 8000];
+
+  const initAudio = () => {
+    if (!contextRef.current) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      const context = new AudioContext();
+      contextRef.current = context;
+
+      const source = context.createMediaElementSource(audioRef.current);
+
+      const filters = frequencies.map((freq) => {
+        const filter = context.createBiquadFilter();
+        filter.type = "peaking";
+        filter.frequency.value = freq;
+        filter.Q.value = 1;
+        filter.gain.value = 0;
+        return filter;
+      });
+
+      const compressor = context.createDynamicsCompressor();
+
+      // Connect chain
+      source.connect(filters[0]);
+      for (let i = 0; i < filters.length - 1; i++) {
+        filters[i].connect(filters[i + 1]);
+      }
+      filters[filters.length - 1].connect(compressor);
+      compressor.connect(context.destination);
+
+      filtersRef.current = filters;
+    }
+  };
+
+  const setNormal = () => {
+    filtersRef.current.forEach((f) => (f.gain.value = 0));
+    setMode("normal");
+  };
+
+  const setLoss = () => {
+    const loss = [0, 0, -5, -15, -30, -40];
+    filtersRef.current.forEach((f, i) => (f.gain.value = loss[i]));
+    setMode("loss");
+  };
+
+  const setCompensation = () => {
+    const comp = [0, 0, 5, 15, 20, 20];
+    filtersRef.current.forEach((f, i) => (f.gain.value = comp[i]));
+    setMode("compensated");
+  };
+
+  const handleFile = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setAudioURL(URL.createObjectURL(file));
+    }
+  };
+
+  return (
+    <div style={{ textAlign: "center", padding: "40px", fontFamily: "Arial" }}>
+      <h1>Music for Hearing Loss</h1>
+      <p>Simulate high-frequency hearing loss and restore it with adaptive compensation.</p>
+
+      <input type="file" accept="audio/*" onChange={handleFile} />
+
+      {audioURL && (
+        <>
+          <br /><br />
+          <audio
+            ref={audioRef}
+            src={audioURL}
+            controls
+            onPlay={initAudio}
+          />
+          <br /><br />
+
+          <button onClick={setNormal}>Normal</button>{" "}
+          <button onClick={setLoss}>Simulate Hearing Loss</button>{" "}
+          <button onClick={setCompensation}>Restore with Compensation</button>
+
+          <p style={{ marginTop: "20px" }}>
+            {mode === "normal" && "Original audio playback."}
+            {mode === "loss" &&
+              "Simulating noise-induced high-frequency hearing loss."}
+            {mode === "compensated" &&
+              "Applying adaptive frequency compensation optimized for music."}
+          </p>
+        </>
+      )}
+    </div>
+  );
+}

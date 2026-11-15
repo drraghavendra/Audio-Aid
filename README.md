@@ -122,7 +122,7 @@ Layer	Technology
 Voice (phone)	Bolna: STT → LLM → TTS + telephony
 Backend	Node.js 18+ (ES modules): scripts and webhook
 Database	Supabase (optional): call feedback
-Web app	React, TypeScript, Tailwind, Web Audio API (separate codebase)
+Web app	`audioaid-app/` — React, TypeScript, Tailwind, Web Audio API
 Build	Cursor + Wispr Flow (dictation)
 Agent config	Bolna MCP + REST API
 Defaults in code: Soniox STT (`stt-rt-v6`, `en`) → OpenAI `gpt-4.1-mini` → ElevenLabs TTS. Multilingual STT can be enabled later via `TRANSCRIBER_LANGUAGE`.
@@ -138,6 +138,11 @@ Install
 cd VOICE-aGENTS
 copy .env.example .env
 npm install
+
+# Web app (second terminal)
+cd audioaid-app
+npm install
+npm run dev
 ```
 Edit `.env` and set at minimum:
 ```env
@@ -184,7 +189,9 @@ Command	Description
 `npm run wispr:transcribe -- file.wav`	Wispr Flow API test
 
 Project structure
-VOICE-aGENTS/
+VOICE-aGENTS/                    ← git repository root
+├── audioaid-app/                ← React + Express (web + hearing test)
+├── Hearing-Loss-ref/            ← upstream reference (ideiasstella/Hearing-Loss)
 ├── prompts/
 │   ├── system-prompt.md           # Agent behaviour (source of truth)
 │   └── system-prompt-redelever.md # Legacy delivery prompt
