@@ -105,15 +105,14 @@ Build	Cursor + Wispr Flow (dictation)
 Agent config	Bolna MCP + REST API
 Defaults in code: Soniox STT (`stt-rt-v6`, multilingual) → OpenAI `gpt-4.1-mini` → ElevenLabs TTS.
 No Spring Boot — Node and Supabase only.
-```
+
 Customer phone ◄──► Bolna (voice)
                          ▲
               Node.js (this repo)
                     │    │
          Bolna MCP/API    Supabase
               Cursor + Wispr (build by voice)
-```
----
+
 Quick start
 Prerequisites
 Node.js 18+
@@ -140,7 +139,7 @@ Bolna MCP (Cursor)
 copy .cursor\mcp.json.example .cursor\mcp.json
 ```
 Add your API key, reload Cursor, then ask: List my Bolna agents.
----
+
 Environment variables
 Variable	Required	Purpose
 `BOLNA_API_KEY`	Yes	API auth
@@ -152,7 +151,7 @@ Variable	Required	Purpose
 `SUPABASE_SERVICE_ROLE_KEY`	Optional	Server/webhook only
 `WISPR_API_KEY`	Optional	Flow REST STT helper
 Never commit `.env` or `service_role` keys.
----
+
 NPM scripts
 Command	Description
 `npm run verify`	Check Bolna key and wallet
@@ -188,7 +187,7 @@ VOICE-aGENTS/
 └── .cursor/mcp.json.example
 ```
 Workflow: edit `prompts/system-prompt.md` → `npm run agent:update-prompt`.
----
+
 Agent behaviour
 Greeting: Hello! I'm your delivery assistant.
 Start in English; follow Telugu or Hindi if the customer switches.
@@ -197,7 +196,7 @@ After interruptions, use the latest customer choice and ask for confirmation.
 Never invent order status or claim an update without backend confirmation.
 Escalate complex cases to a human.
 Full prompt: `prompts/system-prompt.md`.
----
+
 Testing
 Scenario	Pass if
 Time change (10 AM → 6 PM)	Confirms 6 PM; does not say order was updated
@@ -207,7 +206,7 @@ Details: `config/test-scenarios.json`.
 node src/domain/delivery-resolution.test.js
 ```
 Hackathon: use consenting numbers; 3+ calls, 45+ seconds each when submitting.
----
+
 Supabase (optional)
 Store call transcripts and webhook payloads in Postgres.
 Create a project at supabase.com.
@@ -215,9 +214,9 @@ Run `supabase/schema.sql` in the SQL Editor.
 Add `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` to `.env`.
 `npm run webhook` — on each Bolna POST, rows upsert into `call_executions`.
 Setup guide: `docs/SUPABASE.md`.
----
+
 Webhooks
-```powershell
+powershell
 npm run webhook
 # ngrok http 8080 → set WEBHOOK_PUBLIC_URL in .env → recreate or patch agent
 ```
@@ -229,18 +228,18 @@ Test notes, decisions, agent links	`docs/PROJECT-CONTEXT.md`
 Call data (automatic)	Supabase `call_executions`
 Official transcripts	Bolna dashboard → Executions
 Prompt changes	`prompts/system-prompt.md`
----
+
 Roadmap
 Phase	Focus
 Day 1	Agent, prompt, MCP, manual scenarios
 Day 2	Bolna tools/dispositions → Node → `delivery_actions` in Supabase
 Later	Small Node APIs + Supabase dashboard (still no Spring Boot)
----
+
 Security
 Keep API keys out of git and public repos.
 Bolna MCP ⚠ tools can spend balance — confirm before `start_outbound_call`.
 Use service_role only on the server, never in frontend code.
----
+
 Links
 Bolna platform · API quickstart · MCP quickstart
 Bolna MCP (GitHub)
