@@ -1,243 +1,261 @@
-# ReDeliver AI · Voice Agents
+AudioAid · Voice Agents
 
-**ReDeliver Assistant** is a multilingual voice agent for **failed delivery recovery**: reschedule, cancel, or update an address — with confirmation before any backend action.
 
-Built for the **Build Out Loud** hackathon ([Wispr Flow](https://wisprflow.ai) × [Bolna](https://www.bolna.ai)):
 
-| Tool | Role in this repo |
-|------|-------------------|
-| **Wispr Flow** | Speak prompts and edits in Cursor (build by voice) |
-| **Bolna** | Runs the phone agent (STT → LLM → TTS) and telephony |
-| **This codebase** | Agent prompt, API scripts, webhook stub, Day 2 business rules |
+Problem statement Description 
 
+Hearing loss affects hundreds of millions of people worldwide, and for many of them music is one of the things they miss most. Music is tied to memory, mood, culture and connection, yet it is often the part of daily life that hearing devices serve worst.
+
+Hearing aids are built for speech, not music. They are designed to make conversation clear, so they compress loudness, suppress background noise and limit feedback. Those choices help with speech, but they work against music, which has a wider dynamic range, richer harmonics and sustained tones that a speech-tuned device may treat as noise. Many users describe songs as flat, harsh, muffled or lifeless, and some stop listening altogether.
+
+Generic fixes do not work. Common advice such as “boost the bass” or “use a louder volume” assumes everyone loses hearing in the same way. In reality, every person’s hearing loss is different. One person may struggle with high frequencies, another with the mids, and the pattern often differs between ears. A one-size-fits-all preset can fix one frequency range while making another harsh or uncomfortable.
+
+Personalised help is hard to reach. Clinical audiology can build a precise profile, but appointments are slow and costly, and they focus on speech outcomes. Music-specific tuning is rarely offered. Many users, especially older adults, also find online tools confusing and would prefer to ask a question by phone before trying a hearing check.
+
+
+Hearing aids are tuned for speech. AudioAid brings music back.
+AudioAid helps people with hearing loss enjoy music again. A browser-based hearing check builds a personal profile, and a real-time EQ compensates songs to match it. This repository is the voice guide: a Bolna phone agent that explains the product, prepares users for the browser hearing test, and answers FAQs. It does not diagnose anything on the call.
+Built for the Build Out Loud hackathon (Wispr Flow × Bolna): built by voice with Wispr Flow, with the agent configured on Bolna through MCP and Node scripts.
+
+Two gaps follow:
+Personalisation. People need music compensated against their own hearing profile, not a one-size-fits-all preset.
+Guidance. Many users are older, less comfortable with technology, and would rather ask a question on a phone call than read a help page before taking an online hearing check.
+
+Solution overview
+AudioAid has two channels that work together.
+Channel	What it does
+
+Web app (React + TypeScript + Tailwind + Web Audio API, separate codebase)	Runs a six-frequency pure-tone hearing check in the browser, builds an audiogram-style profile, and applies personal EQ to uploaded songs in real time
+This repo: AudioAid Voice Assistant (Bolna)	Phone support that explains the product, preps users for the browser test, explains music vs speech in hearing aids, and answers FAQs by voice
+What the voice agent does
+Guides users through test preparation: quiet room, headphones, the six tones.
+Explains music vs speech processing in hearing aids.
+Explains profile-based EQ and why it differs from a generic bass boost.
+Keeps answers short and phone-friendly, in English.
+What the voice agent never does
+Play test tones over the phone.
+Invent or estimate audiogram values.
+Diagnose hearing loss or give clinical advice.
+Continue a normal conversation if the caller reports red-flag symptoms (it refers them to a professional).
+Submission narrative: `docs/SUBMISSION-AUDIOAID.md`.
+Legacy delivery prompt (from an earlier project): `prompts/system-prompt-redelever.md`.
+
+
+How the pieces fit
+```mermaid
+flowchart LR
+    U[User] -- phone call --> B[Bolna voice agent<br/>STT → LLM → TTS]
+    U -- browser --> W[AudioAid web app<br/>React + Web Audio API]
+    B -- explains and prepares --> U
+    W --> T[Six-frequency hearing check]
+    T --> P[Personal hearing profile]
+    P --> EQ[Real-time personal EQ<br/>on uploaded songs]
+    B -- webhook --> N[Node.js webhook server]
+    N --> S[(Supabase<br/>call_executions)]
+    C[Cursor + Bolna MCP<br/>built with Wispr Flow] -. configures .-> B
+```
+```
+User phone ◄──► Bolna (voice)
+                      ▲
+          Node.js (this repo)
+                │    │
+     Bolna MCP/API    Supabase
+          Cursor + Wispr (build by voice)
+```
 ---
+Flow charts
+1. User journey
+```mermaid
+flowchart TD
+    A[User wants music to sound better] --> B[Calls AudioAid voice assistant]
+    B --> C[Learns music vs speech in hearing aids]
+    C --> D[Gets test-prep guidance:<br/>quiet room, headphones, six tones]
+    D --> E[Opens the web app]
+    E --> F[Takes the six-frequency browser test]
+    F --> G[Personal profile created]
+    G --> H[Uploads a song]
+    H --> I[Hears it with personal EQ applied]
+```
+2. Voice call flow
+```mermaid
+flowchart TD
+    S([Call connects]) --> G[Greeting and what AudioAid is]
+    G --> Q{What does the caller need?}
+    Q -- Test preparation --> T[Explain quiet room, headphones,<br/>six tones, browser steps]
+    Q -- Music vs speech --> M[Explain hearing-aid speech focus<br/>and personal EQ]
+    Q -- FAQ --> F[Short, phone-friendly answer]
+    Q -- Play a tone or diagnose me --> R[Politely decline:<br/>use the browser test,<br/>no diagnosis on the call]
+    T --> N{More questions?}
+    M --> N
+    F --> N
+    R --> N
+    N -- Yes --> Q
+    N -- No --> E([Wrap up and end call])
+```
+3. Safety flow
+```mermaid
+flowchart TD
+    A[Caller mentions symptoms] --> B{Red flag?<br/>ear pain, sudden hearing loss}
+    B -- Yes --> C[Stop the normal flow]
+    C --> D[Recommend seeing a clinician promptly]
+    D --> E([End or offer non-medical help])
+    B -- No --> F[Continue normal guidance]
+```
+4. Developer workflow
+```mermaid
+flowchart LR
+    P[Edit prompts/system-prompt.md] --> U[npm run agent:update-prompt]
+    U --> T[npm run call]
+    T --> R[Review transcript<br/>Bolna dashboard or Supabase]
+    R --> P
+```
+Agent behaviour and safety
+Guides browser hearing test prep (quiet room, headphones, six tones).
+Explains music vs speech in hearing aids and profile-based EQ, not generic bass boost.
+Does not play test tones on the phone or invent audiogram values.
+Redirects ear pain or sudden hearing loss to a professional.
+English, short phone-friendly answers.
+Full prompt (source of truth): `prompts/system-prompt.md`.
 
-## Quick start
+Tech stack
+Layer	Technology
+Voice (phone)	Bolna: STT → LLM → TTS + telephony
+Backend	Node.js 18+ (ES modules): scripts and webhook
+Database	Supabase (optional): call feedback
+Web app	React, TypeScript, Tailwind, Web Audio API (separate codebase)
+Build	Cursor + Wispr Flow (dictation)
+Agent config	Bolna MCP + REST API
+Defaults in code: Soniox STT (`stt-rt-v6`, `en`) → OpenAI `gpt-4.1-mini` → ElevenLabs TTS. Multilingual STT can be enabled later via `TRANSCRIBER_LANGUAGE`.
+No Spring Boot. Node and Supabase only.
 
-**Requirements:** Node.js 18+, a [Bolna](https://platform.bolna.ai) account and API key.
-
+Quick start
+Prerequisites
+Node.js 18+
+Bolna account and API key
+Wispr Flow desktop (hackathon: build by voice)
+Install
 ```powershell
 cd VOICE-aGENTS
 copy .env.example .env
-# Edit .env — set BOLNA_API_KEY (never commit .env)
-
 npm install
+```
+Edit `.env` and set at minimum:
+```env
+BOLNA_API_KEY=bn-...
+```
+Then verify and create the agent:
+```powershell
 npm run verify
 npm run agent:create -- --dry-run
 npm run agent:create
 ```
-
-After create, copy the returned `agent_id` into `.env` as `BOLNA_AGENT_ID`.
-
-### Connect Bolna MCP in Cursor
-
+Copy the returned `agent_id` into `.env` as `BOLNA_AGENT_ID`.
+Bolna MCP (Cursor)
 ```powershell
 copy .cursor\mcp.json.example .cursor\mcp.json
 ```
+Add your API key, reload Cursor, then ask: List my Bolna agents.
 
-Replace `YOUR_BOLNA_API_KEY` in `.cursor/mcp.json`, reload Cursor, then ask: *“List my Bolna agents.”*
+Environment variables
+Variable	Required	Purpose
+`BOLNA_API_KEY`	Yes	API auth
+`BOLNA_AGENT_ID`	After create	Outbound calls and updates
+`TRANSCRIBER_PROVIDER`	No	`soniox` (default) or `deepgram`
+`TRANSCRIBER_LANGUAGE`	No	STT language; defaults to English, multilingual later
+`TEST_RECIPIENT_PHONE`	For live calls	E.164 format, e.g. `+919876543210`
+`WEBHOOK_PUBLIC_URL`	Optional	Set before create to attach the webhook
+`SUPABASE_URL`	Optional	Persist call feedback
+`SUPABASE_SERVICE_ROLE_KEY`	Optional	Server and webhook only
+`WISPR_API_KEY`	Optional	Flow REST STT helper
+Never commit `.env` or `service_role` keys.
 
-Docs: [Bolna MCP quickstart](https://www.bolna.ai/docs/mcp-quickstart) · [Tool list](https://www.bolna.ai/docs/mcp-tool-list)
+NPM scripts
+Command	Description
+`npm run verify`	Check Bolna key and wallet
+`npm run agent:create -- --dry-run`	Write `config/agent.export.json`, no API call
+`npm run agent:create`	Create the AudioAid Voice Assistant on Bolna
+`npm run agent:update-prompt`	Push `prompts/system-prompt.md` to the agent
+`npm run agent:list`	List agents
+`npm run agent:get`	Fetch one agent
+`npm run call:dry-run`	Preview the call body (no charge)
+`npm run call`	Outbound call. Uses credits
+`npm run execution:poll -- <id>`	Poll until the call completes
+`npm run webhook`	Webhook on `http://localhost:8080/webhook`
+`npm run wispr:transcribe -- file.wav`	Wispr Flow API test
 
----
-
-## How a call flows
-
-```
-Customer (phone) → Telephony → Bolna pipeline
-                                    │
-                    ┌───────────────┼───────────────┐
-                    ▼               ▼               ▼
-                  STT             LLM             TTS
-            (e.g. Soniox)    (system prompt)   (e.g. ElevenLabs)
-                    │               │               │
-                    └───────────────┴───────────────┘
-                                    │
-                         Spoken reply to customer
-```
-
-**STT** — speech to text. **LLM** — intent, flow, languages. **TTS** — text to speech.
-
-Default agent config uses **Soniox** (`stt-rt-v6`, `language: multi`) for English, Hindi, and Telugu code-switching. Override in `.env`:
-
-```env
-TRANSCRIBER_PROVIDER=deepgram
-```
-
----
-
-## NPM scripts
-
-| Command | What it does |
-|---------|----------------|
-| `npm run verify` | Validate API key; show wallet balance |
-| `npm run agent:create -- --dry-run` | Write `config/agent.export.json`; no API call |
-| `npm run agent:create` | Create **ReDeliver Assistant** on Bolna |
-| `npm run agent:update-prompt` | Push `prompts/system-prompt.md` to existing agent |
-| `npm run agent:list` | List agents |
-| `npm run agent:get` | Fetch agent by `BOLNA_AGENT_ID` or ID argument |
-| `npm run call:dry-run` | Print outbound call payload (no charge) |
-| `npm run call` | Place outbound call — **uses wallet credits** |
-| `npm run execution:poll -- <id>` | Poll call until completed |
-| `npm run webhook` | Local webhook on `http://localhost:8080/webhook` |
-| `npm run wispr:transcribe -- file.wav` | Optional Wispr Flow REST STT (needs `WISPR_API_KEY`) |
-
-**Test calls:** set `TEST_RECIPIENT_PHONE` to E.164 (e.g. `+919876543210`). Use consenting numbers only.
-
-**Webhooks:** run `npm run webhook`, expose with ngrok, set `WEBHOOK_PUBLIC_URL` before `agent:create` if you want executions posted locally.
-
----
-
-## Repository layout
-
-```
+Project structure
 VOICE-aGENTS/
-├── prompts/system-prompt.md      # Edit agent behaviour here
+├── prompts/
+│   ├── system-prompt.md           # Agent behaviour (source of truth)
+│   └── system-prompt-redelever.md # Legacy delivery prompt
 ├── config/
-│   ├── agent.export.json         # Generated Bolna create payload
-│   ├── test-scenarios.json       # Manual test scripts
-│   └── dispositions.day2-placeholder.json
+│   ├── agent.export.json          # Generated Bolna create payload
+│   └── test-scenarios.json        # Manual test checklist
 ├── src/
-│   ├── bolna/                    # REST client + buildAgentPayload()
-│   ├── scripts/                    # CLI entrypoints
-│   ├── webhook/server.js           # Execution receiver
-│   ├── wispr/                      # Flow API helper
-│   └── domain/delivery-resolution.js  # Confirm-before-update logic
+│   ├── bolna/                     # REST client + agent payload builder
+│   ├── scripts/                   # CLI commands above
+│   ├── webhook/server.js          # Bolna webhooks → optional Supabase
+│   ├── supabase/                  # Supabase client + persist helpers
+│   ├── domain/delivery-resolution.js  # Legacy, from the delivery project
+│   └── wispr/                     # Optional Wispr STT
+├── supabase/schema.sql            # Tables: call_executions, delivery_actions
+├── docs/
+│   ├── SUBMISSION-AUDIOAID.md     # Hackathon submission narrative
+│   ├── PROJECT-CONTEXT.md         # Decisions, feedback, agent IDs
+│   └── SUPABASE.md                # Database setup
 └── .cursor/mcp.json.example
-```
 
-**Prompt workflow:** change `prompts/system-prompt.md` → `npm run agent:update-prompt` (or update via Bolna dashboard / MCP `update_agent`).
+Workflow: edit `prompts/system-prompt.md`, then run `npm run agent:update-prompt`.
 
----
-
-## Agent behaviour (Day 1)
-
-Greeting (configurable): *Hello! I'm your delivery assistant.*
-
-The system prompt enforces:
-
-- Start in **English**; follow **Telugu** or **Hindi** if the customer switches
-- Offer **reschedule**, **cancel**, or **address update**
-- Repeat the customer’s **latest** choice and **ask for confirmation**
-- **Never** invent order status or claim an update without backend confirmation
-- Escalate edge cases to a human
-
-Full prompt: [`prompts/system-prompt.md`](prompts/system-prompt.md)
-
----
-
-## Test scenarios
-
-Use [`config/test-scenarios.json`](config/test-scenarios.json) when testing in the playground or on a live call.
-
-| Scenario | Pass if… |
-|----------|-----------|
-| **Time change** | Confirms **6 PM**, not 10 AM; does not say the order was updated |
-| **Language switch** | Follows Telugu/Hindi; confirms final preference |
-
-Run domain logic checks:
-
+Testing
+Scenario	Pass if
+Test prep	Gives browser steps; no on-call diagnosis
+Compensation	Explains speech vs music and personalised EQ
+Safety	Stops and refers to a clinician on red flags
+Details: `config/test-scenarios.json`.
 ```powershell
 node src/domain/delivery-resolution.test.js
 ```
+> This unit test comes from the earlier delivery project. Replace or remove it once AudioAid-specific tests exist.
+Hackathon: use consenting numbers; 3+ calls, 45+ seconds each when submitting.
 
+Supabase (optional)
+Store call transcripts and webhook payloads in Postgres.
+Create a project at supabase.com.
+Run `supabase/schema.sql` in the SQL Editor.
+Add `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` to `.env`.
+Run `npm run webhook`. On each Bolna POST, rows upsert into `call_executions`.
+Setup guide: `docs/SUPABASE.md`.
+
+Webhooks
+```powershell
+npm run webhook
+# ngrok http 8080 → set WEBHOOK_PUBLIC_URL in .env → recreate or patch the agent
+
+Bolna webhook IPs: `13.203.39.153`, `13.126.9.249`, `13.202.133.53`.
 ---
+Where to save context and feedback
+What	Where
+Test notes, decisions, agent links	`docs/PROJECT-CONTEXT.md`
+Call data (automatic)	Supabase `call_executions`
+Official transcripts	Bolna dashboard → Executions
+Prompt changes	`prompts/system-prompt.md`
 
-## Day 1 checklist
+Roadmap
+Phase	Focus
 
-- [ ] Understand STT, LLM, and TTS
-- [ ] Create **ReDeliver Assistant** (`npm run agent:create` or dashboard)
-- [ ] System prompt in repo matches Bolna agent
-- [ ] Bolna MCP connected in Cursor
-- [ ] Inspect MCP tools (`create_agent`, `get_agent`, `update_agent`, `start_outbound_call`, `get_execution`)
-- [ ] Test delivery-time change scenario
-- [ ] Test language switch
+Day 1	Agent, prompt, MCP, manual scenarios
+Day 2	Bolna tools and dispositions, Node handling, richer call records in Supabase
+Later	Multilingual support via `TRANSCRIBER_LANGUAGE`, small Node APIs, Supabase dashboard (still no Spring Boot)
 
----
+Security and responsibility
+Keep API keys out of git and public repos.
+Bolna MCP tools marked with a warning can spend balance. Confirm before `start_outbound_call`.
+Use the `service_role` key only on the server, never in frontend code.
+AudioAid is an enjoyment and education tool, not a medical device. A browser tone test is not a clinical audiogram. Anyone with ear pain, sudden hearing loss or other concerning symptoms should see a qualified professional.
+Only call numbers whose owners have consented.
 
-## Roadmap (this repo)
-
-| Day | Focus |
-|-----|--------|
-| **1** | Agent config, prompt, MCP, manual tests *(current)* |
-| **2** | Tool calling, webhooks, dispositions, write `delivery_actions` to Supabase |
-| **Later** | More Node APIs + Supabase (auth, dashboard) — **no Spring Boot** |
-
-`src/domain/delivery-resolution.js` is the reference for “confirm then act” before Day 2 tools exist.
-
----
-
-## Why Bolna for ReDeliver (not LiveKit first)
-
-For **outbound delivery calls** and **fast multilingual iteration**, Bolna gives you telephony, STT/LLM/TTS, and dashboard/API in one place. **LiveKit** is a strong choice when you need deep control over WebRTC, custom turn-taking, or in-app voice — not required for Day 1.
-
-```
-        ReDeliver AI (product)
-                 │
-         Node.js (this repo) ← webhooks, Bolna scripts, Supabase
-                 │
-         Supabase (Postgres) ← call feedback + delivery records
-                 │
-              Bolna (voice runtime)
-                 │
-            Phone customers
-```
-
----
-
-## Security
-
-- Do not commit `.env` or API keys in `mcp.json`
-- Bolna MCP can place calls and spend balance — confirm **⚠** tools before running
-- Hackathon: **3+ test calls**, **45+ seconds**, **consenting** participants only
-
----
-
-## Tech stack (summary)
-
-| Layer | What you use |
-|-------|----------------|
-| **Voice on phone** | Bolna (Soniox STT → OpenAI LLM → ElevenLabs TTS) |
-| **Build / edit** | Cursor + Wispr Flow desktop |
-| **This repo** | Node.js 18 scripts + markdown prompts |
-| **Database** | **Supabase** (Postgres) — optional until you set env vars |
-| **Later** | Bolna dispositions → Node writes to Supabase |
-
-Details and defaults: [`docs/PROJECT-CONTEXT.md`](docs/PROJECT-CONTEXT.md).
-
----
-
-## Where to store feedback & context for later
-
-Use **one place in the repo** so git and Cursor both see it:
-
-| Store | Best for |
-|-------|-----------|
-| **[`docs/PROJECT-CONTEXT.md`](docs/PROJECT-CONTEXT.md)** | Decisions, agent IDs, test notes, hackathon feedback, Day 2 todos |
-| **`prompts/system-prompt.md`** | Behaviour changes (what the agent says) |
-| **`config/test-scenarios.json`** | Structured test cases |
-| **Bolna dashboard → Executions** | Official transcripts, cost, recordings (source of truth for calls) |
-| **`npm run webhook`** + **Supabase** `call_executions` | Auto-save Bolna payloads when Supabase env is set |
-| **`npm run webhook`** + paste into PROJECT-CONTEXT | Backup notes if DB not wired yet |
-| **`.cursor/rules/redelever.mdc`** | Short stack reminder so new chats know the project |
-| **Notion** (optional, MCP) | Team sharing / submission write-up — link from PROJECT-CONTEXT |
-| **Cursor chat** | Ephemeral — always copy important outcomes into PROJECT-CONTEXT |
-
-After each test call: add an entry under **Test & feedback log** in `docs/PROJECT-CONTEXT.md`.
-
----
-
-## Supabase (optional)
-
-1. Create a project at [supabase.com](https://supabase.com)
-2. Run SQL from [`supabase/schema.sql`](supabase/schema.sql)
-3. Add `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` to `.env`
-4. Full steps: [`docs/SUPABASE.md`](docs/SUPABASE.md)
-
----
-
-## Links
-
-- [Bolna platform](https://platform.bolna.ai) · [API quickstart](https://www.bolna.ai/docs/quickstarts/api)
-- [Bolna MCP on GitHub](https://github.com/bolna-ai/mcp)
-- [Wispr Flow](https://wisprflow.ai) · [Flow API docs](https://api-docs.wisprflow.ai/quickstart)
+Links
+Bolna platform · API quickstart · MCP quickstart
+Bolna MCP (GitHub)
+Wispr Flow · Flow API
