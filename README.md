@@ -1,4 +1,7 @@
 AudioAid · Voice Agents
+
+AudioAid restores rich, personalized sound through an ear-specific browser hearing test, real-time custom EQ, and a voice guide to walk users through every step. 
+
 Problem statement
 
 Hearing loss affects over 1.5 billion people worldwide and one of the most common complaints from hearing-aid users is that music sounds worse, not better. Hearing aids are optimised for speech clarity. They compress loudness and suppress noise, which helps conversation but flattens music’s wide dynamic range and rich harmonics. Songs end up sounding flat, harsh or lifeless.
