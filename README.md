@@ -2,7 +2,7 @@ Voice Agents
 
 Multilingual failed delivery recovery voice agent for the Build Out Loud hackathon (Wispr Flow × Bolna).
 ReDeliver Assistant calls customers after a failed delivery, understands whether they want to reschedule, cancel, or update their address, and confirms before any backend update.
----
+
 Description Of The problem Statement
 
 When a delivery fails, the customer is usually left with a generic SMS or a support queue. Delivery companies lose time and money on repeat attempts, returns-to-origin and manual call-center follow-ups, while customers wait with no easy way to say what they actually want.
