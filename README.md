@@ -14,6 +14,9 @@ AudioAid’s response: a browser-based hearing test at six standard audiometric 
 
 One-line version (for a tagline or submission form): Hearing aids are tuned for speech; AudioAid restores the music hearing loss takes away, with personal EQ built from your own hearing profile and a voice guide to get you started.
 
+Solution 
+
+What our project does AudioAid lets users take a clinical-style hearing test directly in the browser. It plays pure tones at 6 standard audiometric frequencies and records the volume at which the user can first hear each one. From that, it generates a personal hearing profile and applies a real-time frequency compensation to any uploaded song, boosting exactly what the user's ears are missing so music sounds fuller and clearer.
 
 
 
